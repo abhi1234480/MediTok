@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction History{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Your Prediction History</h2>
+
+    {% if predictions and predictions|length > 0 %}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Predicted Class</th>
+                <th>Date & Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in predictions %}
+            <tr>
+                <td><span class="badge bg-info">{{ row['predicted_class'] }}</span></td>
+                <td>{{ row['created_at'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">No predictions found. Upload an ECG file to generate your first prediction.</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Prediction Analytics</h2>
+
+    {% if labels and counts %}
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <canvas id="barChart"></canvas>
+        </div>
+        <div class="col-md-6 mb-4">
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">No prediction data available yet.</div>
+    {% endif %}
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = {{ labels | tojson }};
+    const counts = {{ counts | tojson }};
+
+    if (labels.length > 0) {
+        // Bar Chart
+        new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Predictions Count',
+                    data: counts,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Pie Chart
+        new Chart(document.getElementById('pieChart'), {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: counts,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)'
+                    ]
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Line Chart
+        new Chart(document.getElementById('lineChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Predictions Trend',
+                    data: counts,
+                    fill: false,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: { responsive: true }
+        });
+    }
+</script>
+{% endblock %}

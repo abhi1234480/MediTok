@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Predict - ECG Report{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Upload ECG Record</h2>
+
+    <!-- File upload form -->
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="dat_file" class="form-label">Upload .dat file:</label>
+            <input type="file" class="form-control" name="dat_file" id="dat_file" accept=".dat" required>
+        </div>
+        <div class="mb-3">
+            <label for="hea_file" class="form-label">Upload .hea file:</label>
+            <input type="file" class="form-control" name="hea_file" id="hea_file" accept=".hea" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate Report</button>
+    </form>
+
+    <!-- Error if file upload missing -->
+    {% if error %}
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+    {% endif %}
+
+    <!-- API error (Gemini failure) -->
+    {% if api_error %}
+    <div class="alert alert-warning mt-4">
+        <strong>AI Report Error:</strong> {{ api_error }}
+    </div>
+    {% endif %}
+
+    <!-- ECG Report if available -->
+    {% if report %}
+    <h4 class="mt-4">AI-Generated ECG Report:</h4>
+    <div class="card mb-4">
+        <div class="card-body">
+            {{ report | safe }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Always show model predictions -->
+    {% if probabilities %}
+    <h4 class="mt-4">Model Predictions:</h4>
+    <ul class="list-group">
+        {% for cls, prob in probabilities.items() %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ cls }}
+            <span class="badge bg-secondary">{{ "%.2f"|format(prob * 100) }}%</span>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h4 class="mt-4">Predicted Superclasses:</h4>
+    <p>
+        {% for cls in predicted %}
+        <span class="badge bg-success">{{ cls }}</span>
+        {% else %}
+        <span class="text-muted">No class confidently predicted</span>
+        {% endfor %}
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

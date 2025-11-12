@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Home - ECG-Report Generator{% endblock %}
+
+{% block content %}
+  {% if user %}
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-body p-4">
+            <h3 class="text-center mb-4">👤 User Profile</h3>
+            <ul class="list-group">
+              <li class="list-group-item"><strong>Username:</strong> {{ user['username'] }}</li>
+              <li class="list-group-item"><strong>Email:</strong> {{ user['email'] }}</li>
+              <li class="list-group-item"><strong>Phone Number:</strong> {{ user['phone_number'] }}</li>
+            </ul>
+            <div class="text-center mt-3">
+              <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="text-center">
+      <h1 class="fw-bold">ECG-Report Generator</h1>
+      <p class="lead">Please <a href="{{ url_for('login') }}">login</a> or <a href="{{ url_for('register') }}">register</a> to view your profile.</p>
+    </div>
+  {% endif %}
+{% endblock %}
